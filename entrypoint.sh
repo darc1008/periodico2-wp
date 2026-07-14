@@ -60,6 +60,32 @@ if [ ! -f wp-config.php ]; then
     --allow-root
 fi
 
+# Forzar que .htaccess tenga las reglas de permalinks para que
+# Apache pueda servir las URLs amigables y no haya redirect loop
+echo "[entrypoint] Verificando .htaccess..."
+HTACCESS=/var/www/html/.htaccess
+NEEDS_HTACCESS=0
+if [ ! -f "$HTACCESS" ] || ! grep -q "BEGIN WordPress" "$HTACCESS"; then
+  NEEDS_HTACCESS=1
+fi
+if [ "$NEEDS_HTACCESS" = "1" ]; then
+  echo "[entrypoint] Generando .htaccess con reglas de WP..."
+  cat > "$HTACCESS" <<'HTEOF'
+# BEGIN WordPress
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>
+# END WordPress
+HTEOF
+  chown www-data:www-data "$HTACCESS"
+  chmod 644 "$HTACCESS"
+fi
+
 echo "[entrypoint] Ejecutando seed..."
 /usr/local/bin/seed.sh 2>&1 | tee /tmp/seed.log
 echo "[seed] done"
