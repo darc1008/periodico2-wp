@@ -1,5 +1,5 @@
 #!/bin/bash
-# periodico2 - One-shot WordPress bootstrap (Public Opinion style)
+# periodico2 - One-shot WordPress bootstrap (Editorial theme, magazine style)
 set -e
 
 DB_HOST="${WORDPRESS_DB_HOST:-127.0.0.1}"
@@ -41,55 +41,57 @@ else
 fi
 
 echo "==> Site settings"
-wp --path=/var/www/html option update blogdescription "${WP_TAGLINE:-El periódico digital — estilo Public Opinion}" --allow-root
+wp --path=/var/www/html option update blogdescription "${WP_TAGLINE:-El periódico digital — actualidad, cultura, política y opinión}" --allow-root
 wp --path=/var/www/html option update timezone_string "America/Santo_Domingo" --allow-root
 wp --path=/var/www/html option update date_format "d/m/Y" --allow-root
 wp --path=/var/www/html option update time_format "H:i" --allow-root
 wp --path=/var/www/html option update start_of_week "1" --allow-root
 wp --path=/var/www/html option update posts_per_page "10" --allow-root
 wp --path=/var/www/html option update default_comment_status "open" --allow-root
-wp --path=/var/www/html option update show_on_front "posts" --allow-root
 
 echo "==> Permalinks"
 wp --path=/var/www/html rewrite structure "/%postname%/" --allow-root
 wp --path=/var/www/html rewrite flush --hard --allow-root
 
-echo "==> News Portal theme (magazine grid - Public Opinion style)"
-# News Portal es un theme magazine-style gratuito de ThemeEgg con grid layouts
-# Lo customizamos con CSS para asemejar Public Opinion de CSSIgniter
-if ! wp --path=/var/www/html theme is-installed news-portal --allow-root 2>/dev/null; then
-  echo "  Instalando News Portal..."
-  wp --path=/var/www/html theme install news-portal --allow-root 2>&1 | tail -3
+echo "==> Editorial theme (magazine style by Mystery Themes)"
+# Editorial es un theme magazine gratuito muy completo de WP.org:
+# - Featured slider (bxslider)
+# - News ticker
+# - Multi-column grid layouts por categoría
+# - Page builder via widgets
+# - Top header con fecha + social icons
+if ! wp --path=/var/www/html theme is-installed editorial --allow-root 2>/dev/null; then
+  echo "  Instalando Editorial..."
+  wp --path=/var/www/html theme install editorial --allow-root 2>&1 | tail -3
 fi
-wp --path=/var/www/html theme activate news-portal --allow-root 2>&1 | tail -1
+wp --path=/var/www/html theme activate editorial --allow-root 2>&1 | tail -1
 
-# Companion plugin (ThemeEgg Demo Importer / Toolkit)
-if ! wp --path=/var/www/html plugin is-installed themeegg-companion --allow-root 2>/dev/null; then
-  wp --path=/var/www/html plugin install themeegg-companion --allow-root 2>&1 | tail -2
-fi
-wp --path=/var/www/html plugin activate themeegg-companion --allow-root 2>&1 | tail -1
+echo "==> Editorial theme options (customizer)"
+# Top header
+wp --path=/var/www/html option update editorial_top_header_option "enable" --allow-root
+wp --path=/var/www/html option update editorial_social_icons_option "enable" --allow-root
+# News ticker
+wp --path=/var/www/html option update editorial_ticker_option "enable" --allow-root
+wp --path=/var/www/html option update editorial_ticker_caption "Última Hora" --allow-root
+# Single post layout
+wp --path=/var/www/html option update editorial_single_page_layout "right_sidebar" --allow-root
+# Copyright
+wp --path=/var/www/html option update editorial_copyright_text "© 2026 Periodico2 — Todos los derechos reservados" --allow-root
+# Color primario del theme (lo deja en rojo periodístico por defecto)
+# Editorial no expone color primario directo en options; lo manejamos via CSS
 
-# News Portal options
-wp --path=/var/www/html option update news_portal_site_layout "wide" --allow-root
-wp --path=/var/www/html option update news_portal_primary_color "c0392b" --allow-root
-wp --path=/var/www/html option update news_portal_breaking_news_title "BREAKING" --allow-root
-wp --path=/var/www/html option update news_portal_enable_breaking_news "1" --allow-root
-wp --path=/var/www/html option update news_portal_blog_excerpt_length "30" --allow-root
-wp --path=/var/www/html option update news_portal_header_text "Periodico2" --allow-root
-
-# Custom CSS que recrea el estilo de Public Opinion
-echo "==> Custom CSS (Public Opinion look)"
-# News Portal no usa custom_css post type; en su lugar guardamos CSS
-# en una option y lo inyectamos via wp_head
+echo "==> Custom CSS (Editorial - ajustes Public Opinion style)"
+# Editorial ya es un theme magazine-style. Solo ajustamos paleta y tipografía
+# para acercarlo al look de Public Opinion de CSSIgniter.
 wp --path=/var/www/html option update periodico2_custom_css "$(cat /seed/custom.css)" --allow-root
-# Activar el hook wp_head que inyecta el CSS (lo agrega el plugin o via mu-plugin)
-# Opcion simple: crear un mu-plugin que imprima el CSS en wp_head
+
+# mu-plugin para inyectar CSS
 mkdir -p /var/www/html/wp-content/mu-plugins
 cat > /var/www/html/wp-content/mu-plugins/periodico2-custom-css.php <<'MUPLUGIN'
 <?php
 /**
  * Plugin Name: periodico2 custom CSS
- * Description: Inyecta CSS para estilo Public Opinion en wp_head
+ * Description: Inyecta CSS en wp_head (estilo Public Opinion sobre Editorial)
  */
 add_action('wp_head', function() {
     $css = get_option('periodico2_custom_css');
@@ -97,8 +99,15 @@ add_action('wp_head', function() {
         echo '<style id="periodico2-custom-css">' . "\n" . $css . "\n</style>\n";
     }
 }, 99);
+
+// Asegurar que la home apunte a la página Magazine
+add_action('init', function() {
+    $front = get_option('show_on_front');
+    if ($front !== 'page') {
+        update_option('show_on_front', 'page');
+    }
+});
 MUPLUGIN
-echo "  Custom CSS option + mu-plugin configurados"
 
 echo "==> Essential plugins"
 for PLUGIN in akismet contact-form-7 classic-editor seo-by-rank-math; do
@@ -129,39 +138,75 @@ echo "==> Navigation menu"
 if ! wp --path=/var/www/html menu list --allow-root 2>/dev/null | grep -q "Menú Principal"; then
   wp --path=/var/www/html menu create "Menú Principal" --allow-root 2>&1 | tail -1
 fi
-echo "  Limpiando items del menu..."
-# Limpiar items de forma segura (sin colgar si el output es inesperado)
+# Limpiar items previos
 EXISTING_ITEMS=$(timeout 10 wp --path=/var/www/html menu item list "Menú Principal" --field=db_id --format=ids --allow-root 2>/dev/null | head -50)
 if [ -n "$EXISTING_ITEMS" ]; then
   for ITEM_ID in $EXISTING_ITEMS; do
     [ -n "$ITEM_ID" ] && timeout 5 wp --path=/var/www/html menu item delete "$ITEM_ID" --allow-root 2>/dev/null
   done
 fi
-echo "  Agregando items..."
+# Items
+timeout 10 wp --path=/var/www/html menu item add-custom "Menú Principal" "Inicio" "/" --allow-root 2>&1 | tail -1
 for SLUG in politica economia mundo tecnologia deportes cultura opinion estilo; do
   CAT_ID=$(wp --path=/var/www/html term list category --slug="$SLUG" --field=term_id --allow-root 2>/dev/null | head -1)
   if [ -n "$CAT_ID" ]; then
+    LABEL=$(echo "${SECTIONS[$SLUG]}")
     timeout 10 wp --path=/var/www/html menu item add-custom \
-      "Menú Principal" \
-      "$(echo "$SLUG" | sed 's/^./\U&/' | sed 's/estilo/Estilo/')" \
-      "/category/$SLUG/" \
-      --allow-root 2>&1 | tail -1
+      "Menú Principal" "$LABEL" "/category/$SLUG/" --allow-root 2>&1 | tail -1
   fi
 done
-# Add "Home" link as first item
-timeout 10 wp --path=/var/www/html menu item add-custom "Menú Principal" "Home" "/" --allow-root 2>&1 | tail -1
 
-# Asignar menu via PHP
-MENU_ID=$(wp --path=/var/www/html menu list --fields=term_id,name --allow-root 2>/dev/null | awk -F'|' '/Menú Principal/ {gsub(/ /,"",$1); print $1; exit}')
-if [ -n "$MENU_ID" ]; then
-  echo "==> Asignando menu $MENU_ID via PHP"
-  CULTURINFO_MENU_ID=$MENU_ID wp --path=/var/www/html eval-file /seed/assign_menu.php --allow-root 2>&1 | tail -20
-
-  # Borra Sample Page y Hello World
-  SAMPLE_ID=$(wp --path=/var/www/html post list --post_type=page --name="sample-page" --field=ID --allow-root 2>/dev/null | head -1)
-  [ -n "$SAMPLE_ID" ] && wp --path=/var/www/html post delete "$SAMPLE_ID" --force --allow-root 2>&1 | tail -1
-  wp --path=/var/www/html post delete 1 --force --allow-root 2>/dev/null || true
+# Top header menu (fecha + social icons los pone el theme automáticamente)
+if ! wp --path=/var/www/html menu list --allow-root 2>/dev/null | grep -q "Menú Superior"; then
+  wp --path=/var/www/html menu create "Menú Superior" --allow-root 2>&1 | tail -1
 fi
+EXISTING_TOP=$(timeout 10 wp --path=/var/www/html menu item list "Menú Superior" --field=db_id --format=ids --allow-root 2>/dev/null | head -20)
+if [ -n "$EXISTING_TOP" ]; then
+  for ITEM_ID in $EXISTING_TOP; do
+    [ -n "$ITEM_ID" ] && timeout 5 wp --path=/var/www/html menu item delete "$ITEM_ID" --allow-root 2>/dev/null
+  done
+fi
+timeout 10 wp --path=/var/www/html menu item add-custom "Menú Superior" "Acerca de" "/acerca-de/" --allow-root 2>&1 | tail -1
+timeout 10 wp --path=/var/www/html menu item add-custom "Menú Superior" "Contacto" "/contacto/" --allow-root 2>&1 | tail -1
+
+# Asignar menus via PHP (Editorial usa locations: primary, top-header, footer)
+MENU_ID=$(wp --path=/var/www/html menu list --fields=term_id,name --allow-root 2>/dev/null | awk -F'|' '/Menú Principal/ {gsub(/ /,"",$1); print $1; exit}')
+MENU_TOP_ID=$(wp --path=/var/www/html menu list --fields=term_id,name --allow-root 2>/dev/null | awk -F'|' '/Menú Superior/ {gsub(/ /,"",$1); print $1; exit}')
+if [ -n "$MENU_ID" ] || [ -n "$MENU_TOP_ID" ]; then
+  echo "==> Asignando menus via PHP (primary=$MENU_ID, top-header=$MENU_TOP_ID)"
+  PRIMARY_MENU=$MENU_ID TOP_MENU=$MENU_TOP_ID wp --path=/var/www/html eval-file /seed/assign_menu.php --allow-root 2>&1 | tail -10
+fi
+
+# Borrar Sample Page y Hello World
+SAMPLE_ID=$(wp --path=/var/www/html post list --post_type=page --name="sample-page" --field=ID --allow-root 2>/dev/null | head -1)
+[ -n "$SAMPLE_ID" ] && wp --path=/var/www/html post delete "$SAMPLE_ID" --force --allow-root 2>&1 | tail -1
+wp --path=/var/www/html post delete 1 --force --allow-root 2>/dev/null || true
+
+# Crear página Magazine para el home
+MAG_ID=$(wp --path=/var/www/html post list --post_type=page --name=inicio --field=ID --allow-root 2>/dev/null | head -1)
+if [ -z "$MAG_ID" ]; then
+  echo "==> Creando página 'Inicio' con template Magazine"
+  MAG_ID=$(wp --path=/var/www/html post create \
+    --post_type=page \
+    --post_status=publish \
+    --post_title="Inicio" \
+    --post_name="inicio" \
+    --post_content="" \
+    --porcelain \
+    --allow-root 2>/dev/null | head -1) || true
+fi
+# Borrar página Blog default
+BLOG_ID=$(wp --path=/var/www/html post list --post_type=page --name=blog --field=ID --allow-root 2>/dev/null | head -1)
+[ -n "$BLOG_ID" ] && [ "$BLOG_ID" != "$MAG_ID" ] && wp --path=/var/www/html post delete "$BLOG_ID" --force --allow-root 2>&1 | tail -1
+
+# Asignar home = Magazine
+wp --path=/var/www/html option update show_on_front "page" --allow-root
+wp --path=/var/www/html option update page_on_front "$MAG_ID" --allow-root
+wp --path=/var/www/html option update page_for_posts 0 --allow-root
+
+echo "==> Magazine widgets (slider + grids + sidebar)"
+MAG_WIDGETS_OUT=$(MAG_ID=$MAG_ID wp --path=/var/www/html eval-file /seed/magazine_widgets.php --allow-root 2>&1)
+echo "$MAG_WIDGETS_OUT" | tail -10
 
 # Frontmatter parser
 parse_frontmatter() {
@@ -234,3 +279,4 @@ fi
 
 echo "==> ✓ Bootstrap done"
 wp --path=/var/www/html post list --post_type=post --post_status=publish --format=count --allow-root
+wp --path=/var/www/html post list --post_type=page --post_status=publish --format=count --allow-root

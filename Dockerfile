@@ -26,6 +26,7 @@ COPY mariadb.cnf /etc/mysql/conf.d/periodico2.cnf
 # Seed scripts and sample articles
 COPY seed/seed.sh /usr/local/bin/seed.sh
 COPY seed/assign_menu.php /seed/assign_menu.php
+COPY seed/magazine_widgets.php /seed/magazine_widgets.php
 COPY seed/articles /seed/articles
 COPY seed/custom.css /seed/custom.css
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
