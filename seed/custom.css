@@ -1,6 +1,6 @@
 /*
  * periodico2 - Public Opinion style recreation
- * Custom CSS that overrides Flavor theme to mimic cssigniter's Public Opinion look
+ * Custom CSS that overrides News Portal theme to mimic cssigniter's Public Opinion
  */
 
 /* ====== Variables y reset ====== */
@@ -15,67 +15,65 @@
   --po-bg: #f8f9fa;
 }
 
-/* ====== Top bar oscura con fecha + social ====== */
-#cm-masthead {
-  background: var(--po-dark);
+body {
+  font-family: Georgia, 'Times New Roman', serif;
+  color: var(--po-text);
+  background: var(--po-bg);
 }
 
-#cm-masthead .cm-top-bar {
-  background: var(--po-darker);
-  color: rgba(255,255,255,0.8);
-  font-size: 12px;
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-#cm-masthead .cm-top-bar a {
-  color: rgba(255,255,255,0.7) !important;
-}
-#cm-masthead .cm-top-bar a:hover { color: #fff !important; }
-#cm-masthead .cm-date-weather {
-  color: rgba(255,255,255,0.6);
-}
-
-/* Logo centrado */
-#cm-masthead .cm-main-header {
-  padding: 30px 0;
+/* ====== Header (logo section) ====== */
+.np-logo-section-wrapper {
   background: #fff;
+  padding: 35px 0;
+  text-align: center;
+  border-bottom: 1px solid var(--po-border);
+}
+.site-branding {
   text-align: center;
 }
-#cm-masthead .cm-site-title {
+.site-title {
   font-size: 56px !important;
   font-weight: 900 !important;
   letter-spacing: -1px;
   text-transform: none;
-  margin-bottom: 8px;
+  margin: 0 0 8px !important;
   font-family: Georgia, 'Times New Roman', serif;
 }
-#cm-masthead .cm-site-title a {
+.site-title a {
   color: var(--po-dark) !important;
+  text-decoration: none;
 }
-#cm-masthead .cm-site-description {
+.site-description {
   font-size: 13px !important;
   color: var(--po-text-light) !important;
   text-transform: uppercase;
   letter-spacing: 2px;
   font-style: italic;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* Menú principal */
-#cm-primary-nav {
+/* ====== Menu bar (dark con rojo) ====== */
+.np-header-menu-wrapper {
   background: var(--po-dark) !important;
   border-top: 1px solid rgba(255,255,255,0.05);
   border-bottom: 3px solid var(--po-red);
 }
-#cm-primary-menu {
+.main-navigation {
+  background: transparent !important;
+}
+#primary-menu.menu {
   display: flex !important;
   justify-content: center;
   flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
-#cm-primary-menu li {
+#primary-menu.menu li {
   position: relative;
   margin: 0;
 }
-#cm-primary-menu a {
+#primary-menu.menu a {
   color: #fff !important;
   text-transform: uppercase;
   font-weight: 600 !important;
@@ -85,81 +83,71 @@
   display: block;
   transition: color 0.2s, background 0.2s;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  text-decoration: none;
 }
-#cm-primary-menu a:hover,
-#cm-primary-menu .current-menu-item a {
+#primary-menu.menu a:hover,
+#primary-menu.menu .current-menu-item a,
+#primary-menu.menu .current_page_item a {
   color: var(--po-red) !important;
   background: transparent;
 }
-#cm-primary-menu li:first-child a {
-  color: var(--po-red) !important;
-}
 
-/* Breaking news ticker - rojo */
-.cm-breaking-news {
+/* ====== News ticker (breaking news) ====== */
+.np-ticker-wrapper,
+.news-ticker {
   background: var(--po-red) !important;
   color: #fff !important;
-  padding: 14px 0 !important;
-  font-size: 14px !important;
   border-top: 4px solid var(--po-red-dark);
   border-bottom: 4px solid var(--po-red-dark);
+  padding: 12px 0 !important;
 }
-.cm-breaking-news .cm-breaking-news-label {
+.news-ticker-title {
   background: var(--po-dark) !important;
   color: #fff !important;
   text-transform: uppercase;
   font-weight: 700;
   letter-spacing: 2px;
-  padding: 8px 18px !important;
+  padding: 10px 18px !important;
   font-size: 13px;
 }
 
-/* ====== Layout del blog ====== */
-#cm-content {
-  padding: 40px 0;
-  background: var(--po-bg);
-}
-
-/* Featured slider arriba */
-.cm-featured-posts-wrapper {
-  margin-bottom: 50px;
-}
-
-/* Articles en grid */
-article {
+/* ====== Articles ====== */
+#primary article,
+.np-archive-posts-wrapper article,
+article.post {
   background: #fff;
   border: 1px solid var(--po-border);
   margin-bottom: 30px;
+  padding: 0;
   transition: box-shadow 0.2s, transform 0.2s;
+  overflow: hidden;
 }
-article:hover {
+article.post:hover {
   box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
-article .cm-entry-title,
-article .entry-title {
+article.post .entry-title {
   font-family: Georgia, 'Times New Roman', serif !important;
   font-weight: 700 !important;
-  font-size: 28px !important;
+  font-size: 26px !important;
   line-height: 1.2 !important;
-  margin: 0 0 12px !important;
+  margin: 20px 25px 12px !important;
+  padding: 0;
 }
-article .cm-entry-title a,
-article .entry-title a {
+article.post .entry-title a {
   color: var(--po-text) !important;
   text-decoration: none;
 }
-article .cm-entry-title a:hover,
-article .entry-title a:hover {
+article.post .entry-title a:hover {
   color: var(--po-red) !important;
 }
-article .cm-entry-summary,
-article .entry-content {
+article.post .entry-content {
   color: var(--po-text);
   font-size: 15px;
   line-height: 1.7;
-  padding: 20px 25px;
+  padding: 0 25px 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
-article .cm-entry-meta {
+article.post .entry-footer {
   padding: 12px 25px;
   border-top: 1px solid var(--po-border);
   color: var(--po-text-light);
@@ -168,9 +156,16 @@ article .cm-entry-meta {
   letter-spacing: 1px;
 }
 
-/* Category tag en article (badge) */
-article .cm-cat-links a,
-article .cat-links a {
+/* Category tag (badge rojo) */
+.post-cats-list,
+.cat-links,
+.entry-category a,
+a[rel="category tag"] {
+  display: inline-block !important;
+}
+.post-cats-list a,
+.entry-category a,
+a[rel="category tag"] {
   background: var(--po-red) !important;
   color: #fff !important;
   text-transform: uppercase;
@@ -179,16 +174,21 @@ article .cat-links a {
   letter-spacing: 1.5px;
   padding: 5px 12px !important;
   display: inline-block;
-  margin-bottom: 12px;
+  margin: 0 0 12px 25px;
   text-decoration: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
-article .cm-cat-links a:hover {
+.post-cats-list a:hover,
+.entry-category a:hover,
+a[rel="category tag"]:hover {
   background: var(--po-red-dark) !important;
+  color: #fff !important;
 }
 
 /* Read more button */
-article .cm-read-more,
-article .more-link {
+.np-archive-more a,
+.np-button,
+a.more-link {
   background: var(--po-dark) !important;
   color: #fff !important;
   padding: 10px 22px !important;
@@ -200,19 +200,34 @@ article .more-link {
   margin-top: 15px;
   text-decoration: none !important;
   transition: background 0.2s;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
-article .cm-read-more:hover,
-article .more-link:hover {
+.np-archive-more a:hover,
+.np-button:hover,
+a.more-link:hover {
   background: var(--po-red) !important;
 }
 
-/* Sidebar */
+/* ====== Featured posts slider ====== */
+.np-archive-post-content-wrapper,
+.np-archive-posts-wrapper {
+  margin-bottom: 30px;
+}
+.np-article-thumb img,
+.wp-post-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ====== Sidebar ====== */
 #secondary,
 aside.widget-area,
-.cm-sidebar {
+.widget-area {
   background: #fff;
   padding: 25px;
   border: 1px solid var(--po-border);
+  margin-bottom: 30px;
 }
 .widget-title {
   background: var(--po-dark) !important;
@@ -223,96 +238,154 @@ aside.widget-area,
   letter-spacing: 2px;
   margin: 0 0 20px !important;
   font-weight: 700;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 .widget {
   margin-bottom: 30px;
 }
+.widget ul {
+  list-style: none;
+  padding: 0;
+}
+.widget ul li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--po-border);
+}
+.widget ul li:last-child {
+  border-bottom: none;
+}
 
-/* Footer oscuro */
-footer.cm-footer,
+/* ====== Footer ====== */
 .site-footer,
-#cm-footer {
+footer.site-footer {
   background: var(--po-darker) !important;
   color: rgba(255,255,255,0.7) !important;
   padding: 50px 0 30px;
 }
-footer a, .site-footer a {
+.site-footer a,
+footer a {
   color: rgba(255,255,255,0.6) !important;
 }
-footer a:hover, .site-footer a:hover {
+.site-footer a:hover,
+footer a:hover {
   color: var(--po-red) !important;
 }
+.np-copyright-text {
+  color: rgba(255,255,255,0.5);
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  margin-top: 30px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
 
-/* Mobile menu toggle */
-.cm-mobile-menu-button,
-.cm-menu-toggle {
+/* ====== Home icon (en el menu header) ====== */
+.np-home-icon a {
+  color: #fff !important;
+  padding: 18px 22px;
+  display: block;
+  font-size: 18px;
+}
+
+/* ====== Icon elements (search, dark mode) ====== */
+.np-icon-elements-wrapper a,
+.search-main a {
   color: #fff !important;
 }
 
-/* Article thumbnail border */
-article .cm-entry-thumb img,
-article .post-thumbnail img {
-  width: 100%;
-  height: auto;
-  display: block;
+/* ====== Search form ====== */
+.search-form-main {
+  background: var(--po-darker) !important;
+  padding: 15px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+.search-form .search-field {
+  background: #fff !important;
+  color: var(--po-text) !important;
+  border: 1px solid var(--po-border) !important;
+  padding: 10px 15px !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+.search-form .search-submit {
+  background: var(--po-red) !important;
+  color: #fff !important;
+  border: none !important;
+  padding: 10px 18px !important;
+  cursor: pointer;
 }
 
-/* Eliminar scroll horizontal del featured slider */
-.cm-featured-posts {
-  overflow: hidden;
-}
-
-/* Tag chips */
-.tag-links a, .tags-links a {
-  background: var(--po-bg);
-  color: var(--po-text);
-  padding: 4px 10px;
-  border-radius: 3px;
-  font-size: 12px;
-  margin: 2px;
-  display: inline-block;
+/* ====== Comments link ====== */
+.comments-link a {
+  color: var(--po-text-light) !important;
   text-decoration: none;
 }
-.tag-links a:hover {
-  background: var(--po-red);
-  color: #fff;
+.comments-link a:hover {
+  color: var(--po-red) !important;
 }
 
-/* Pagination */
-.pagination .page-numbers {
+/* ====== Byline ====== */
+.byline a,
+.entry-meta a {
+  color: var(--po-text-light) !important;
+  text-decoration: none;
+}
+.byline a:hover,
+.entry-meta a:hover {
+  color: var(--po-red) !important;
+}
+
+/* ====== Pagination ====== */
+.navigation.pagination .page-numbers {
   background: #fff;
   color: var(--po-text);
   padding: 10px 16px;
   border: 1px solid var(--po-border);
   margin: 0 2px;
   text-decoration: none;
+  display: inline-block;
 }
-.pagination .current,
-.pagination .page-numbers:hover {
+.navigation.pagination .current,
+.navigation.pagination a.page-numbers:hover {
   background: var(--po-red);
   color: #fff;
   border-color: var(--po-red);
 }
 
-/* Social icons (top bar) */
-.cm-social-icons li a {
-  background: rgba(255,255,255,0.05) !important;
-  color: rgba(255,255,255,0.8) !important;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  line-height: 28px;
-  text-align: center;
-  display: block;
-}
-.cm-social-icons li a:hover {
-  background: var(--po-red) !important;
-  color: #fff !important;
+/* ====== Featured slider area ====== */
+.np-archive-post-content {
+  background: #fff;
+  padding: 20px;
+  border: 1px solid var(--po-border);
 }
 
-/* Comments link style */
-.comments-link a {
-  color: var(--po-text-light) !important;
-  text-decoration: none;
+/* ====== Scroll bar personalizada ====== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
-.comments-link a:hover { color: var(--po-red) !important; }
+::-webkit-scrollbar-track {
+  background: var(--po-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--po-red);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--po-red-dark);
+}
+
+/* ====== Mobile responsive ====== */
+@media (max-width: 768px) {
+  .site-title { font-size: 36px !important; }
+  .site-description { font-size: 11px !important; }
+  #primary-menu.menu a {
+    padding: 12px 16px !important;
+    font-size: 12px !important;
+  }
+  .np-logo-section-wrapper { padding: 20px 0; }
+  article.post .entry-title {
+    font-size: 22px !important;
+  }
+}
