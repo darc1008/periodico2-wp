@@ -54,28 +54,28 @@ echo "==> Permalinks"
 wp --path=/var/www/html rewrite structure "/%postname%/" --allow-root
 wp --path=/var/www/html rewrite flush --hard --allow-root
 
-echo "==> Flavor theme (magazine grid - Public Opinion style)"
-# Flavor es de ThemeGrill, mismo equipo que ColorMag. Soporta grid layouts.
-if ! wp --path=/var/www/html theme is-installed flavor --allow-root 2>/dev/null; then
-  echo "  Instalando Flavor..."
-  wp --path=/var/www/html theme install flavor --allow-root 2>&1 | tail -3
+echo "==> News Portal theme (magazine grid - Public Opinion style)"
+# News Portal es un theme magazine-style gratuito de ThemeEgg con grid layouts
+# Lo customizamos con CSS para asemejar Public Opinion de CSSIgniter
+if ! wp --path=/var/www/html theme is-installed news-portal --allow-root 2>/dev/null; then
+  echo "  Instalando News Portal..."
+  wp --path=/var/www/html theme install news-portal --allow-root 2>&1 | tail -3
 fi
-wp --path=/var/www/html theme activate flavor --allow-root 2>&1 | tail -1
+wp --path=/var/www/html theme activate news-portal --allow-root 2>&1 | tail -1
 
-# Companion plugin ThemeGrill Toolkit
-if ! wp --path=/var/www/html plugin is-installed themegrill-tools --allow-root 2>/dev/null; then
-  wp --path=/var/www/html plugin install themegrill-tools --allow-root 2>&1 | tail -2
+# Companion plugin (ThemeEgg Demo Importer / Toolkit)
+if ! wp --path=/var/www/html plugin is-installed themeegg-companion --allow-root 2>/dev/null; then
+  wp --path=/var/www/html plugin install themeegg-companion --allow-root 2>&1 | tail -2
 fi
-wp --path=/var/www/html plugin activate themegrill-tools --allow-root 2>&1 | tail -1
+wp --path=/var/www/html plugin activate themeegg-companion --allow-root 2>&1 | tail -1
 
-# Flavor options
-wp --path=/var/www/html option update flavor_site_layout "wide_layout" --allow-root
-wp --path=/var/www/html option update flavor_primary_color "c0392b" --allow-root  # rojo periodístico
-wp --path=/var/www/html option update flavor_header_logo_placement "header_text_only" --allow-root
-wp --path=/var/www/html option update flavor_enable_featured_image_slider "1" --allow-root
-wp --path=/var/www/html option update flavor_enable_breaking_news "1" --allow-root
-wp --path=/var/www/html option update flavor_breaking_news_title "Breaking" --allow-root
-wp --path=/var/www/html option update flavor_blog_post_excerpt_length "30" --allow-root
+# News Portal options
+wp --path=/var/www/html option update news_portal_site_layout "wide" --allow-root
+wp --path=/var/www/html option update news_portal_primary_color "c0392b" --allow-root
+wp --path=/var/www/html option update news_portal_breaking_news_title "BREAKING" --allow-root
+wp --path=/var/www/html option update news_portal_enable_breaking_news "1" --allow-root
+wp --path=/var/www/html option update news_portal_blog_excerpt_length "30" --allow-root
+wp --path=/var/www/html option update news_portal_header_text "Periodico2" --allow-root
 
 # Custom CSS que recrea el estilo de Public Opinion
 echo "==> Custom CSS (Public Opinion look)"

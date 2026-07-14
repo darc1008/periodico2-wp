@@ -9,13 +9,13 @@ if (!$menu_id) {
     return;
 }
 
-$mods = get_option('theme_mods_flavor');
+$mods = get_option('theme_mods_news-portal');
 if (!is_array($mods)) $mods = array();
 $mods['nav_menu_locations'] = array('primary' => $menu_id);
-update_option('theme_mods_flavor', $mods);
+update_option('theme_mods_news-portal', $mods);
 update_option('nav_menu_locations', array('primary' => $menu_id));
 
-echo "theme_mods_flavor.nav_menu_locations = " . json_encode($mods['nav_menu_locations']) . "\n";
+echo "theme_mods_news-portal.nav_menu_locations = " . json_encode($mods['nav_menu_locations']) . "\n";
 echo "nav_menu_locations = " . json_encode(get_option('nav_menu_locations')) . "\n";
 
 $items = wp_get_nav_menu_items($menu_id);
