@@ -79,16 +79,26 @@ wp --path=/var/www/html option update news_portal_header_text "Periodico2" --all
 
 # Custom CSS que recrea el estilo de Public Opinion
 echo "==> Custom CSS (Public Opinion look)"
-CSS_ID=$(wp --path=/var/www/html post list --post_type=custom_css --field=ID --allow-root 2>/dev/null | head -1)
-if [ -z "$CSS_ID" ]; then
-  CSS_ID=$(wp --path=/var/www/html post create /seed/custom.css \
-    --post_type=custom_css \
-    --post_status=publish \
-    --post_title="Periodico2 Custom CSS - Public Opinion style" \
-    --allow-root 2>&1 | grep -oE 'Created post [0-9]+' | grep -oE '[0-9]+' | head -1)
-fi
-[ -n "$CSS_ID" ] && wp --path=/var/www/html option update custom_css_post_id "$CSS_ID" --allow-root
-echo "  Custom CSS post ID: $CSS_ID"
+# News Portal no usa custom_css post type; en su lugar guardamos CSS
+# en una option y lo inyectamos via wp_head
+wp --path=/var/www/html option update periodico2_custom_css "$(cat /seed/custom.css)" --allow-root
+# Activar el hook wp_head que inyecta el CSS (lo agrega el plugin o via mu-plugin)
+# Opcion simple: crear un mu-plugin que imprima el CSS en wp_head
+mkdir -p /var/www/html/wp-content/mu-plugins
+cat > /var/www/html/wp-content/mu-plugins/periodico2-custom-css.php <<'MUPLUGIN'
+<?php
+/**
+ * Plugin Name: periodico2 custom CSS
+ * Description: Inyecta CSS para estilo Public Opinion en wp_head
+ */
+add_action('wp_head', function() {
+    $css = get_option('periodico2_custom_css');
+    if ($css) {
+        echo '<style id="periodico2-custom-css">' . "\n" . $css . "\n</style>\n";
+    }
+}, 99);
+MUPLUGIN
+echo "  Custom CSS option + mu-plugin configurados"
 
 echo "==> Essential plugins"
 for PLUGIN in akismet contact-form-7 classic-editor seo-by-rank-math; do
