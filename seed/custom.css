@@ -1,0 +1,318 @@
+/*
+ * periodico2 - Public Opinion style recreation
+ * Custom CSS that overrides Flavor theme to mimic cssigniter's Public Opinion look
+ */
+
+/* ====== Variables y reset ====== */
+:root {
+  --po-red: #c0392b;
+  --po-red-dark: #a93226;
+  --po-dark: #1a1a1a;
+  --po-darker: #0d0d0d;
+  --po-text: #2c3e50;
+  --po-text-light: #7f8c8d;
+  --po-border: #ecf0f1;
+  --po-bg: #f8f9fa;
+}
+
+/* ====== Top bar oscura con fecha + social ====== */
+#cm-masthead {
+  background: var(--po-dark);
+}
+
+#cm-masthead .cm-top-bar {
+  background: var(--po-darker);
+  color: rgba(255,255,255,0.8);
+  font-size: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+#cm-masthead .cm-top-bar a {
+  color: rgba(255,255,255,0.7) !important;
+}
+#cm-masthead .cm-top-bar a:hover { color: #fff !important; }
+#cm-masthead .cm-date-weather {
+  color: rgba(255,255,255,0.6);
+}
+
+/* Logo centrado */
+#cm-masthead .cm-main-header {
+  padding: 30px 0;
+  background: #fff;
+  text-align: center;
+}
+#cm-masthead .cm-site-title {
+  font-size: 56px !important;
+  font-weight: 900 !important;
+  letter-spacing: -1px;
+  text-transform: none;
+  margin-bottom: 8px;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+#cm-masthead .cm-site-title a {
+  color: var(--po-dark) !important;
+}
+#cm-masthead .cm-site-description {
+  font-size: 13px !important;
+  color: var(--po-text-light) !important;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-style: italic;
+}
+
+/* Menú principal */
+#cm-primary-nav {
+  background: var(--po-dark) !important;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 3px solid var(--po-red);
+}
+#cm-primary-menu {
+  display: flex !important;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+#cm-primary-menu li {
+  position: relative;
+  margin: 0;
+}
+#cm-primary-menu a {
+  color: #fff !important;
+  text-transform: uppercase;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  letter-spacing: 1.5px;
+  padding: 18px 22px !important;
+  display: block;
+  transition: color 0.2s, background 0.2s;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+#cm-primary-menu a:hover,
+#cm-primary-menu .current-menu-item a {
+  color: var(--po-red) !important;
+  background: transparent;
+}
+#cm-primary-menu li:first-child a {
+  color: var(--po-red) !important;
+}
+
+/* Breaking news ticker - rojo */
+.cm-breaking-news {
+  background: var(--po-red) !important;
+  color: #fff !important;
+  padding: 14px 0 !important;
+  font-size: 14px !important;
+  border-top: 4px solid var(--po-red-dark);
+  border-bottom: 4px solid var(--po-red-dark);
+}
+.cm-breaking-news .cm-breaking-news-label {
+  background: var(--po-dark) !important;
+  color: #fff !important;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 8px 18px !important;
+  font-size: 13px;
+}
+
+/* ====== Layout del blog ====== */
+#cm-content {
+  padding: 40px 0;
+  background: var(--po-bg);
+}
+
+/* Featured slider arriba */
+.cm-featured-posts-wrapper {
+  margin-bottom: 50px;
+}
+
+/* Articles en grid */
+article {
+  background: #fff;
+  border: 1px solid var(--po-border);
+  margin-bottom: 30px;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+article:hover {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+article .cm-entry-title,
+article .entry-title {
+  font-family: Georgia, 'Times New Roman', serif !important;
+  font-weight: 700 !important;
+  font-size: 28px !important;
+  line-height: 1.2 !important;
+  margin: 0 0 12px !important;
+}
+article .cm-entry-title a,
+article .entry-title a {
+  color: var(--po-text) !important;
+  text-decoration: none;
+}
+article .cm-entry-title a:hover,
+article .entry-title a:hover {
+  color: var(--po-red) !important;
+}
+article .cm-entry-summary,
+article .entry-content {
+  color: var(--po-text);
+  font-size: 15px;
+  line-height: 1.7;
+  padding: 20px 25px;
+}
+article .cm-entry-meta {
+  padding: 12px 25px;
+  border-top: 1px solid var(--po-border);
+  color: var(--po-text-light);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Category tag en article (badge) */
+article .cm-cat-links a,
+article .cat-links a {
+  background: var(--po-red) !important;
+  color: #fff !important;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 11px !important;
+  letter-spacing: 1.5px;
+  padding: 5px 12px !important;
+  display: inline-block;
+  margin-bottom: 12px;
+  text-decoration: none;
+}
+article .cm-cat-links a:hover {
+  background: var(--po-red-dark) !important;
+}
+
+/* Read more button */
+article .cm-read-more,
+article .more-link {
+  background: var(--po-dark) !important;
+  color: #fff !important;
+  padding: 10px 22px !important;
+  text-transform: uppercase;
+  font-size: 12px !important;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+  display: inline-block;
+  margin-top: 15px;
+  text-decoration: none !important;
+  transition: background 0.2s;
+}
+article .cm-read-more:hover,
+article .more-link:hover {
+  background: var(--po-red) !important;
+}
+
+/* Sidebar */
+#secondary,
+aside.widget-area,
+.cm-sidebar {
+  background: #fff;
+  padding: 25px;
+  border: 1px solid var(--po-border);
+}
+.widget-title {
+  background: var(--po-dark) !important;
+  color: #fff !important;
+  padding: 12px 20px !important;
+  text-transform: uppercase;
+  font-size: 14px !important;
+  letter-spacing: 2px;
+  margin: 0 0 20px !important;
+  font-weight: 700;
+}
+.widget {
+  margin-bottom: 30px;
+}
+
+/* Footer oscuro */
+footer.cm-footer,
+.site-footer,
+#cm-footer {
+  background: var(--po-darker) !important;
+  color: rgba(255,255,255,0.7) !important;
+  padding: 50px 0 30px;
+}
+footer a, .site-footer a {
+  color: rgba(255,255,255,0.6) !important;
+}
+footer a:hover, .site-footer a:hover {
+  color: var(--po-red) !important;
+}
+
+/* Mobile menu toggle */
+.cm-mobile-menu-button,
+.cm-menu-toggle {
+  color: #fff !important;
+}
+
+/* Article thumbnail border */
+article .cm-entry-thumb img,
+article .post-thumbnail img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Eliminar scroll horizontal del featured slider */
+.cm-featured-posts {
+  overflow: hidden;
+}
+
+/* Tag chips */
+.tag-links a, .tags-links a {
+  background: var(--po-bg);
+  color: var(--po-text);
+  padding: 4px 10px;
+  border-radius: 3px;
+  font-size: 12px;
+  margin: 2px;
+  display: inline-block;
+  text-decoration: none;
+}
+.tag-links a:hover {
+  background: var(--po-red);
+  color: #fff;
+}
+
+/* Pagination */
+.pagination .page-numbers {
+  background: #fff;
+  color: var(--po-text);
+  padding: 10px 16px;
+  border: 1px solid var(--po-border);
+  margin: 0 2px;
+  text-decoration: none;
+}
+.pagination .current,
+.pagination .page-numbers:hover {
+  background: var(--po-red);
+  color: #fff;
+  border-color: var(--po-red);
+}
+
+/* Social icons (top bar) */
+.cm-social-icons li a {
+  background: rgba(255,255,255,0.05) !important;
+  color: rgba(255,255,255,0.8) !important;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  text-align: center;
+  display: block;
+}
+.cm-social-icons li a:hover {
+  background: var(--po-red) !important;
+  color: #fff !important;
+}
+
+/* Comments link style */
+.comments-link a {
+  color: var(--po-text-light) !important;
+  text-decoration: none;
+}
+.comments-link a:hover { color: var(--po-red) !important; }
