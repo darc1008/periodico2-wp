@@ -100,6 +100,18 @@ add_action('wp_head', function() {
     }
 }, 99);
 
+// FIX: deshabilitar redirect_canonical para evitar loop 301 en la home
+// cuando show_on_front=page y page_on_front es una página Magazine.
+// WordPress 6.7 + Magazine template genera redirect_canonical() que
+// produce 301 → 301 → ... en la URL raíz. Este filter corta ese loop.
+add_filter('redirect_canonical', function($redirect_url, $requested_url) {
+    // Si la canonical es la misma URL que se pidió, no redirigir
+    if (rtrim($redirect_url, '/') === rtrim($requested_url, '/')) {
+        return false;
+    }
+    return $redirect_url;
+}, 10, 2);
+
 // Asegurar que la home apunte a la página Magazine
 add_action('init', function() {
     $front = get_option('show_on_front');
