@@ -120,15 +120,18 @@ if ! wp --path=/var/www/html menu list --allow-root 2>/dev/null | grep -q "Menú
   wp --path=/var/www/html menu create "Menú Principal" --allow-root 2>&1 | tail -1
 fi
 echo "  Limpiando items del menu..."
-EXISTING_ITEMS=$(wp --path=/var/www/html menu item list "Menú Principal" --field=db_id --format=ids --allow-root 2>/dev/null)
-for ITEM_ID in $EXISTING_ITEMS; do
-  wp --path=/var/www/html menu item delete "$ITEM_ID" --allow-root 2>/dev/null
-done
+# Limpiar items de forma segura (sin colgar si el output es inesperado)
+EXISTING_ITEMS=$(timeout 10 wp --path=/var/www/html menu item list "Menú Principal" --field=db_id --format=ids --allow-root 2>/dev/null | head -50)
+if [ -n "$EXISTING_ITEMS" ]; then
+  for ITEM_ID in $EXISTING_ITEMS; do
+    [ -n "$ITEM_ID" ] && timeout 5 wp --path=/var/www/html menu item delete "$ITEM_ID" --allow-root 2>/dev/null
+  done
+fi
 echo "  Agregando items..."
 for SLUG in politica economia mundo tecnologia deportes cultura opinion estilo; do
   CAT_ID=$(wp --path=/var/www/html term list category --slug="$SLUG" --field=term_id --allow-root 2>/dev/null | head -1)
   if [ -n "$CAT_ID" ]; then
-    wp --path=/var/www/html menu item add-custom \
+    timeout 10 wp --path=/var/www/html menu item add-custom \
       "Menú Principal" \
       "$(echo "$SLUG" | sed 's/^./\U&/' | sed 's/estilo/Estilo/')" \
       "/category/$SLUG/" \
@@ -136,7 +139,7 @@ for SLUG in politica economia mundo tecnologia deportes cultura opinion estilo; 
   fi
 done
 # Add "Home" link as first item
-wp --path=/var/www/html menu item add-custom "Menú Principal" "Home" "/" --allow-root 2>&1 | tail -1
+timeout 10 wp --path=/var/www/html menu item add-custom "Menú Principal" "Home" "/" --allow-root 2>&1 | tail -1
 
 # Asignar menu via PHP
 MENU_ID=$(wp --path=/var/www/html menu list --fields=term_id,name --allow-root 2>/dev/null | awk -F'|' '/Menú Principal/ {gsub(/ /,"",$1); print $1; exit}')
